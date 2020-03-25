@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:radis_demo/dummy_data.dart';
 import 'package:radis_demo/screens/room_screen.dart';
-import 'package:radis_demo/widgets/dropdown_widget.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -9,13 +8,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String room ;
+  String room = 'Room 1';
 
   final roomData = DUMMY_PATIENTS;
 
   void selectRoom(BuildContext context, String room) {
     Navigator.of(context).pushNamed(RoomScreen.routeName, arguments: {
-      'roomData': roomData,
+      'roomData': roomData.where((x)=>x.room == room).toList(),
     });
   }
 
@@ -26,17 +25,31 @@ class _MainScreenState extends State<MainScreen> {
         appBar: AppBar(title: Text('Room Diary')),
         body: Column(
           children: <Widget>[
-            Text('Help Me!'),
-            DropdownWidget(
-                title: 'Select Room',
-                items: <String>['Room 1', 'Room 2'],//rooms,
-                currentItem: 'Room 1',//rooms[0],
-                hintText: 'Select Room',
-                itemCallBack: (String room) {
-                  setState(() {
-                    this.room = room;
-                  });
-                  }),
+            DropdownButton<String>(
+              value: room,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 16,
+              style: Theme.of(context).textTheme.title,
+              underline: Container(
+                height: 2,
+                color: Theme.of(context).appBarTheme.color,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  room = newValue;
+                });
+              },
+              items: rooms
+                  .toSet()
+                  .toList()
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
             RaisedButton(
                 onPressed: () => selectRoom(context, room),
                 child: Text('Check Room Diary')),

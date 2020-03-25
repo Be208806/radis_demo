@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:radis_demo/models/appointment.dart';
 import 'package:radis_demo/widgets/room_item.dart';
 
 import '../dummy_data.dart';
@@ -17,12 +18,12 @@ class _RoomScreenState extends State<RoomScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String,Object>;
+    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String,List<Appointment>>;
     final roomData = routeArgs['roomData'];
-    title = roomData;
+    title = roomData[0].room;
     listOfAppointments = new List<Widget>();
     for (int i = startOfDay; i <= endOfDay; i++) {
-      var currentAppointment = DUMMY_PATIENTS.firstWhere((x) => x.time == i,orElse:() => null);
+      var currentAppointment = roomData.firstWhere((x) => x.time == i,orElse:() => null);
       Widget currentRow = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -41,20 +42,5 @@ class _RoomScreenState extends State<RoomScreen> {
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 2000,childAspectRatio: 2.5,crossAxisSpacing: 20,mainAxisSpacing: 0),
           ),
         );
-        // GridView(
-        //   padding: const EdgeInsets.all(25),
-        //   children: hoursOfDay
-        //       .map((appData) {
-        //         var currentAppointment =
-        //           RoomItem(appData.forename, appData.surname, appData.time)
-        //       },)
-        //       .toList(),
-        //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        //     maxCrossAxisExtent: 2000,
-        //     childAspectRatio: 3,
-        //     crossAxisSpacing: 20,
-        //     mainAxisSpacing: 20,
-        //   ),
-        // ),
   }
 }
